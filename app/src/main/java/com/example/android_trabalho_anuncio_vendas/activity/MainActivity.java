@@ -1,5 +1,6 @@
 package com.example.android_trabalho_anuncio_vendas.activity;
 
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -79,7 +80,36 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        botaoEntrar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String email = cadastroEmail.getText().toString();
+                String senha = cadastroSenha.getText().toString();
 
+                if (!email.isEmpty() ){
+                    if (!senha.isEmpty() ){
+                        autenticacao.signInWithEmailAndPassword(email, senha)
+                                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<AuthResult> task) {
+
+                                        if ( (task.isSuccessful())){
+                                            Toast.makeText(MainActivity.this, "Usuário Logado com Sucesso", Toast.LENGTH_SHORT).show();
+                                            startActivity(new Intent(getApplicationContext(),MainActivity.class));
+                                        }else {
+                                            Toast.makeText(MainActivity.this, "Erro ao fazer login : " + task.getException(), Toast.LENGTH_SHORT).show();
+                                        }
+
+                                    }
+                                });
+                    }else {
+                        Toast.makeText(MainActivity.this, "Preencha o campo Senha!", Toast.LENGTH_SHORT).show();
+                    }
+                }else {
+                    Toast.makeText(MainActivity.this, "Preencha o campo E-mail!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     private  void componentesLogin (){
