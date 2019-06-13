@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
 
                                         if ( (task.isSuccessful())){
                                             Toast.makeText(MainActivity.this, "Usuário Logado com Sucesso", Toast.LENGTH_SHORT).show();
-                                            startActivity(new Intent(getApplicationContext(),MainActivity.class));
+                                            startActivity(new Intent(getApplicationContext(),AnunciosActivity.class));
                                         }else {
                                             Toast.makeText(MainActivity.this, "Erro ao fazer login : " + task.getException(), Toast.LENGTH_SHORT).show();
                                         }
