@@ -6,6 +6,10 @@
         <item android:id="@+id/menu_sair"
             android:title="Sair" />
 
+
+        <item android:id="@+id/menu_anuncios"
+            android:title="Meus anúncios" />
+
     </group>
 
 </menu>

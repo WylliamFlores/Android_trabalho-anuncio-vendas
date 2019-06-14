@@ -29,13 +29,16 @@ public class AnunciosActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
-    //sair do sistema
+    //sair do sistema e meus anuncios
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch ( item.getItemId() ){
             case R.id.menu_sair :
                 autenticacao.signOut();
                 startActivity(new Intent(getApplicationContext(),MainActivity.class));
+                break;
+            case R.id.menu_anuncios :
+                startActivity(new Intent(getApplicationContext(),MeusAnunciosActivity.class));
                 break;
         }
         return super.onOptionsItemSelected(item);
