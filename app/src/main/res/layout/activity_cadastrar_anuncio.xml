@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:gravity="center"
     tools:context=".activity.CadastrarAnuncioActivity">
 
     <LinearLayout
@@ -52,30 +53,40 @@
     </LinearLayout>
 
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/Titulo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
+        android:layout_margin="10dp"
         android:ems="10"
         android:hint="Título"
         android:inputType="textPersonName"
         android:padding="10dp" />
 
     <EditText
-        android:id="@+id/editText2"
+        android:id="@+id/Valor"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
+        android:layout_margin="10dp"
         android:ems="10"
         android:hint="Valor"
         android:inputType="textPersonName"
         android:padding="10dp" />
 
     <EditText
-        android:id="@+id/editText3"
+        android:id="@+id/Telefone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:ems="10"
+        android:hint="Telefone"
+        android:inputType="phone"
+        android:padding="10dp" />
+
+    <EditText
+        android:id="@+id/Descricao"
         android:layout_width="match_parent"
         android:layout_height="90dp"
-        android:layout_marginBottom="16dp"
+        android:layout_margin="10dp"
         android:ems="10"
         android:hint="Descrição"
         android:inputType="textPersonName"
@@ -85,6 +96,9 @@
         android:id="@+id/button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Cadastrar anúncio"/>
+        android:layout_margin="10dp"
+        android:onClick="salvarAnuncio"
+        android:text="Cadastrar anúncio" />
+
 
 </LinearLayout>
