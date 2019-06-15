@@ -14,8 +14,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.webkit.WebView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 
 import com.example.android_trabalho_anuncio_vendas.R;
 import com.example.android_trabalho_anuncio_vendas.helper.Permissoes;
@@ -28,6 +30,7 @@ public class CadastrarAnuncioActivity extends AppCompatActivity
 
     private EditText Titulo, Valor, Descricao, Telefone;
     private ImageView image1, iimage2;
+    private Spinner spinnerCidades, spinnerCategorias;
     private List<String> listaFotosRecuperadas = new ArrayList<>();
     private String [] permissoes = new String[]{
             Manifest.permission.READ_EXTERNAL_STORAGE
@@ -42,11 +45,50 @@ public class CadastrarAnuncioActivity extends AppCompatActivity
         Permissoes.validarPermissoes(permissoes, this, 1);
 
         inicializandoComponentes();
+        carregarSpinner();
     }
 
     public void salvarAnuncio(View view){
 
     }
+
+    private void carregarSpinner() {
+
+        //Spinner CIDADES
+        String[] cidades = new String[]{
+                "Porto Alegre",
+                "Alvorada",
+                "Cachoeirinha",
+                "Campo Bom",
+                "Canoas",
+                "Estância Velha",
+                "Esteio",
+                "Gravataí",
+                "Guaíba",
+                "Novo Hamburgo",
+                "São Leopoldo",
+                "Sapiranga",
+                "Sapucaia do Sul",
+                "Viamão",
+        };
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, cidades);
+        adapter.setDropDownViewResource( android.R.layout.simple_spinner_dropdown_item );
+        spinnerCidades.setAdapter( adapter );
+
+        //Spinner CATEGORIAS
+        String[] categorias = new String[]{
+                "Longboard",
+                "Semi Longboard",
+                "Cruiser",
+                "Street",
+        };
+        ArrayAdapter<String> adapterCategoria = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, categorias);
+        adapterCategoria.setDropDownViewResource( android.R.layout.simple_spinner_dropdown_item );
+        spinnerCategorias.setAdapter( adapterCategoria );
+    }
+
+
+
 
     @Override
     public void onClick(View v) {
@@ -93,6 +135,8 @@ public class CadastrarAnuncioActivity extends AppCompatActivity
         Valor = findViewById(R.id.Valor);
         Descricao = findViewById(R.id.Descricao);
         Telefone = findViewById(R.id.Telefone);
+        spinnerCidades = findViewById(R.id.spinnerCidades);
+        spinnerCategorias = findViewById(R.id.spinnerCategorias);
         image1 = findViewById(R.id.image1);
         iimage2 = findViewById(R.id.image2);
         image1.setOnClickListener(this);
