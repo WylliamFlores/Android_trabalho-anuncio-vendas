@@ -91,7 +91,7 @@
     <EditText
         android:id="@+id/Descricao"
         android:layout_width="match_parent"
-        android:layout_height="90dp"
+        android:layout_height="wrap_content"
         android:layout_margin="10dp"
         android:ems="10"
         android:hint="Descrição"
@@ -103,8 +103,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:onClick="salvarAnuncio"
+        android:onClick="validarCamposAnuncio"
         android:text="Cadastrar anúncio" />
-
 
 </LinearLayout>

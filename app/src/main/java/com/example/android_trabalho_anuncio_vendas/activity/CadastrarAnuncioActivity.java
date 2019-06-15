@@ -13,14 +13,20 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.webkit.WebView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.example.android_trabalho_anuncio_vendas.R;
+import com.example.android_trabalho_anuncio_vendas.helper.ConfiguracaoFirebase;
 import com.example.android_trabalho_anuncio_vendas.helper.Permissoes;
+import com.example.android_trabalho_anuncio_vendas.model.Anuncio;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +38,9 @@ public class CadastrarAnuncioActivity extends AppCompatActivity
     private ImageView image1, iimage2;
     private Spinner spinnerCidades, spinnerCategorias;
     private List<String> listaFotosRecuperadas = new ArrayList<>();
+    private List<String> listaURLFotos = new ArrayList<>();
+    private Anuncio anuncio;
+    private StorageReference storage;
     private String [] permissoes = new String[]{
             Manifest.permission.READ_EXTERNAL_STORAGE
     };
@@ -41,6 +50,9 @@ public class CadastrarAnuncioActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cadastrar_anuncio);
 
+        //Configurações Storage
+        storage = ConfiguracaoFirebase.getFirebaseStorage();
+
         //Validando permissões
         Permissoes.validarPermissoes(permissoes, this, 1);
 
@@ -48,9 +60,93 @@ public class CadastrarAnuncioActivity extends AppCompatActivity
         carregarSpinner();
     }
 
-    public void salvarAnuncio(View view){
+
+    private Anuncio configurarAnuncio(){
+
+        String cidades  = spinnerCidades.getSelectedItem().toString();
+        String categoria  = spinnerCategorias.getSelectedItem().toString();
+        String titulo  = Titulo.getText().toString();
+        String valor = Valor.getText().toString();
+        String telefone = Telefone.getText().toString();
+        String descricao = Descricao.getText().toString();
+
+        Anuncio anuncio = new Anuncio();
+        anuncio.setCidades( cidades );
+        anuncio.setCategoria(categoria);
+        anuncio.setTitulo(titulo);
+        anuncio.setValor(valor);
+        anuncio.setTelefone( telefone );
+        anuncio.setDescricao(descricao);
+
+        return anuncio;
 
     }
+
+
+    public void validarCamposAnuncio(View view){
+
+        anuncio = configurarAnuncio();
+
+        if( listaFotosRecuperadas.size() !=0
+                && !anuncio.getCidades().isEmpty()
+                && !anuncio.getCategoria().isEmpty()
+                && !anuncio.getTitulo().isEmpty()
+                && !anuncio.getValor().isEmpty()
+                && !anuncio.getTelefone().isEmpty()
+                && !anuncio.getDescricao().isEmpty()){
+                    salvarAnuncio();
+        }else{
+            Toast.makeText(this, "É necessário preencher todos os campos", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+    public void salvarAnuncio(){
+
+        Toast.makeText(CadastrarAnuncioActivity.this, "Aguarde, o cadastro esta sendo processado e salvo.", Toast.LENGTH_LONG).show();
+         //Salvar imagem
+        for (int i=0; i < listaFotosRecuperadas.size(); i++){
+            String urlImagem = listaFotosRecuperadas.get(i);
+            int tamanhoLista = listaFotosRecuperadas.size();
+            salvarFotoStorage(urlImagem, tamanhoLista, i );
+
+        }
+    }
+
+
+    private void salvarFotoStorage(String urlString, final int totalFotos, int cont){
+
+        //Criar nó no storage
+        StorageReference imagemAnuncio = storage.child("imagens")
+                .child("anuncios")
+                .child( anuncio.getIdAnuncio() )
+                .child("imagem"+cont);
+
+        //Fazer upload do arquivo
+        UploadTask uploadTask = imagemAnuncio.putFile( Uri.parse(urlString) );
+        uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+                Uri firebaUri = taskSnapshot.getUploadSessionUri();
+                String urlConvertida = firebaUri.toString();
+
+                listaURLFotos.add( urlConvertida );
+                if( totalFotos == listaURLFotos.size() ){
+                    anuncio.setFotos( listaURLFotos );
+                    anuncio.salvar();
+                    finish();
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(CadastrarAnuncioActivity.this, "Falha no Upload", Toast.LENGTH_SHORT).show();
+                        Log.i("INFO", "Falha ao fazer upload: " + e.getMessage());
+            }
+        });
+    }
+
 
     private void carregarSpinner() {
 
@@ -88,8 +184,6 @@ public class CadastrarAnuncioActivity extends AppCompatActivity
     }
 
 
-
-
     @Override
     public void onClick(View v) {
         Log.d("onClick", "onClick: " + v.getId() );
@@ -104,10 +198,12 @@ public class CadastrarAnuncioActivity extends AppCompatActivity
         }
     }
 
+
     public void escolherImagem(int requestCode){
         Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(i, requestCode);
     }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -129,6 +225,7 @@ public class CadastrarAnuncioActivity extends AppCompatActivity
 
         }
     }
+
 
     private void inicializandoComponentes(){
         Titulo = findViewById(R.id.Titulo);
@@ -160,6 +257,7 @@ public class CadastrarAnuncioActivity extends AppCompatActivity
         dialog.show();
     }
 
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -168,11 +266,5 @@ public class CadastrarAnuncioActivity extends AppCompatActivity
                 alertaValidacaoPermissao();
             }
         }
-    }
-
-
-    @Override
-    public void onPointerCaptureChanged(boolean hasCapture) {
-
     }
 }
