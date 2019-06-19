@@ -39,7 +39,6 @@ public class AdapterAnuncios extends RecyclerView.Adapter<AdapterAnuncios.MyView
         holder.titulo.setText( anuncio.getTitulo() );
         holder.valor.setText( anuncio.getValor() );
 
-
         //Primeira imagem
         List<String> urlFotos = anuncio.getFotos();
         String urlCapa = urlFotos.get(0);
