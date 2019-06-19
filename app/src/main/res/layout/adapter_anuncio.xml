@@ -3,14 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp">
+    android:layout_margin="4dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="140dp"
         android:layout_margin="4dp"
         android:orientation="horizontal"
-        android:padding="8dp">
+        android:padding="4dp">
 
         <ImageView
             android:id="@+id/imageAnuncio"
@@ -19,14 +19,13 @@
             android:scaleType="centerInside"
             app:srcCompat="@drawable/padrao" />
 
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginLeft="4dp"
             android:layout_marginRight="2dp"
-            android:layout_marginBottom="8dp"
-            android:gravity="center_vertical"
+            android:gravity="center"
             android:orientation="vertical">
 
             <TextView
@@ -39,19 +38,19 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/textView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Valor R$:"
-                android:textSize="14sp" />
-
-            <TextView
                 android:id="@+id/textPreco"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="R$ 850.00"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/textCidades"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Porto Alegre"
                 android:textSize="14sp" />
         </LinearLayout>
     </LinearLayout>

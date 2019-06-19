@@ -37,14 +37,13 @@ public class AdapterAnuncios extends RecyclerView.Adapter<AdapterAnuncios.MyView
 
         Anuncio anuncio = anuncios.get(position);
         holder.titulo.setText( anuncio.getTitulo() );
-        holder.valor.setText( anuncio.getValor() );
+        holder.preco.setText( anuncio.getValor() );
+        holder.cidades.setText( anuncio.getCidades() );
 
         //Primeira imagem
         List<String> urlFotos = anuncio.getFotos();
         String urlCapa = urlFotos.get(0);
-        Picasso.get()
-                .load(urlCapa)
-                .into(holder.foto);
+        Picasso.get().load(urlCapa).into(holder.foto);
     }
 
     @Override
@@ -55,14 +54,16 @@ public class AdapterAnuncios extends RecyclerView.Adapter<AdapterAnuncios.MyView
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         TextView titulo;
-        TextView valor;
+        TextView preco;
+        TextView cidades;
         ImageView foto;
 
         public MyViewHolder(View itemView) {
             super(itemView);
 
             titulo = itemView.findViewById(R.id.textTitulo);
-            valor = itemView.findViewById(R.id.textPreco);
+            preco = itemView.findViewById(R.id.textPreco);
+            cidades = itemView.findViewById(R.id.textCidades);
             foto = itemView.findViewById(R.id.imageAnuncio);
         }
     }

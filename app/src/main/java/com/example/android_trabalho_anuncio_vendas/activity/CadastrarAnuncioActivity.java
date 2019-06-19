@@ -23,8 +23,11 @@ import com.example.android_trabalho_anuncio_vendas.R;
 import com.example.android_trabalho_anuncio_vendas.helper.ConfiguracaoFirebase;
 import com.example.android_trabalho_anuncio_vendas.helper.Permissoes;
 import com.example.android_trabalho_anuncio_vendas.model.Anuncio;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -60,6 +63,56 @@ public class CadastrarAnuncioActivity extends AppCompatActivity
         carregarSpinner();
     }
 
+    public void salvarAnuncio(){
+
+        Toast.makeText(CadastrarAnuncioActivity.this, "Aguarde, o cadastro esta sendo processado e salvo.", Toast.LENGTH_LONG).show();
+        //Salvar imagem
+        for (int i=0; i < listaFotosRecuperadas.size(); i++){
+            String urlImagem = listaFotosRecuperadas.get(i);
+            int tamanhoLista = listaFotosRecuperadas.size();
+            salvarFotoStorage(urlImagem, tamanhoLista, i );
+
+        }
+    }
+
+    private void salvarFotoStorage(String urlString, final int totalFotos, int cont){
+
+        //Criar nó no storage
+        final StorageReference imagemAnuncio = storage.child("imagens")
+                .child("anuncios")
+                .child( anuncio.getIdAnuncio() )
+                .child("imagem"+cont);
+
+        //Fazer upload do arquivo
+        UploadTask uploadTask = imagemAnuncio.putFile(Uri.parse(urlString));
+        uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+            @Override
+            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                if (!task.isSuccessful()){
+                    throw task.getException();
+                }
+                return imagemAnuncio.getDownloadUrl();
+            }
+        }) .addOnCompleteListener(new OnCompleteListener<Uri>() {
+            @Override
+            public void onComplete(@NonNull Task<Uri> task) {
+                if(task.isSuccessful()){
+                    Uri downloadUri = task.getResult();
+                    listaURLFotos.add(downloadUri.toString());
+                    if(totalFotos==listaURLFotos.size()){
+                        anuncio.setFotos(listaURLFotos);
+                        anuncio.salvar();
+                        finish();
+                    }
+                }
+            }
+        }) .addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(CadastrarAnuncioActivity.this, "Falha no Upload", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
     private Anuncio configurarAnuncio(){
 
@@ -100,51 +153,46 @@ public class CadastrarAnuncioActivity extends AppCompatActivity
         }
     }
 
-
-    public void salvarAnuncio(){
-
-        Toast.makeText(CadastrarAnuncioActivity.this, "Aguarde, o cadastro esta sendo processado e salvo.", Toast.LENGTH_LONG).show();
-         //Salvar imagem
-        for (int i=0; i < listaFotosRecuperadas.size(); i++){
-            String urlImagem = listaFotosRecuperadas.get(i);
-            int tamanhoLista = listaFotosRecuperadas.size();
-            salvarFotoStorage(urlImagem, tamanhoLista, i );
-
+    @Override
+    public void onClick(View v) {
+        Log.d("onClick", "onClick: " + v.getId() );
+        switch ( v.getId() ){
+            case R.id.image1 :
+                Log.d("onClick", "onClick: " );
+                escolherImagem(1);
+                break;
+            case R.id.image2 :
+                escolherImagem(2);
+                break;
         }
     }
 
 
-    private void salvarFotoStorage(String urlString, final int totalFotos, int cont){
+    public void escolherImagem(int requestCode){
+        Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(i, requestCode);
+    }
 
-        //Criar nó no storage
-        StorageReference imagemAnuncio = storage.child("imagens")
-                .child("anuncios")
-                .child( anuncio.getIdAnuncio() )
-                .child("imagem"+cont);
 
-        //Fazer upload do arquivo
-        UploadTask uploadTask = imagemAnuncio.putFile( Uri.parse(urlString) );
-        uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
-                Uri firebaUri = taskSnapshot.getUploadSessionUri();
-                String urlConvertida = firebaUri.toString();
+        if( resultCode == Activity.RESULT_OK){
 
-                listaURLFotos.add( urlConvertida );
-                if( totalFotos == listaURLFotos.size() ){
-                    anuncio.setFotos( listaURLFotos );
-                    anuncio.salvar();
-                    finish();
-                }
+            //Recuperando imagem
+            Uri imagemSelecionada = data.getData();
+            String caminhoImagem = imagemSelecionada.toString();
+
+            //Configurando imagem
+            if( requestCode == 1 ){
+                image1.setImageURI( imagemSelecionada );
+            }else if( requestCode == 2 ){
+                iimage2.setImageURI( imagemSelecionada );
             }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(CadastrarAnuncioActivity.this, "Falha no Upload", Toast.LENGTH_SHORT).show();
-                        Log.i("INFO", "Falha ao fazer upload: " + e.getMessage());
-            }
-        });
+            listaFotosRecuperadas.add( caminhoImagem );
+
+        }
     }
 
 
@@ -182,50 +230,6 @@ public class CadastrarAnuncioActivity extends AppCompatActivity
         adapterCategoria.setDropDownViewResource( android.R.layout.simple_spinner_dropdown_item );
         spinnerCategorias.setAdapter( adapterCategoria );
     }
-
-
-    @Override
-    public void onClick(View v) {
-        Log.d("onClick", "onClick: " + v.getId() );
-        switch ( v.getId() ){
-            case R.id.image1 :
-                Log.d("onClick", "onClick: " );
-                escolherImagem(1);
-                break;
-            case R.id.image2 :
-                escolherImagem(2);
-                break;
-        }
-    }
-
-
-    public void escolherImagem(int requestCode){
-        Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(i, requestCode);
-    }
-
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if( resultCode == Activity.RESULT_OK){
-
-            //Recuperando imagem
-            Uri imagemSelecionada = data.getData();
-            String caminhoImagem = imagemSelecionada.toString();
-
-            //Configurando imagem
-            if( requestCode == 1 ){
-                image1.setImageURI( imagemSelecionada );
-            }else if( requestCode == 2 ){
-                iimage2.setImageURI( imagemSelecionada );
-        }
-            listaFotosRecuperadas.add( caminhoImagem );
-
-        }
-    }
-
 
     private void inicializandoComponentes(){
         Titulo = findViewById(R.id.Titulo);

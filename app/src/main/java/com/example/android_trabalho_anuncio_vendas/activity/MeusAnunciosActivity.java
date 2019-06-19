@@ -1,6 +1,5 @@
 package com.example.android_trabalho_anuncio_vendas.activity;
 
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -64,12 +63,7 @@ public class MeusAnunciosActivity extends AppCompatActivity {
         recuperarAnuncios();
     }
 
-    public void Componentes (){
-        recyclerAnuncios = findViewById(R.id.recyclerAnuncios);
-    }
-
-    private void recuperarAnuncios(){
-
+     private void recuperarAnuncios(){
 
         anuncioUsuarioReferencia.addValueEventListener(new ValueEventListener() {
             @Override
@@ -80,7 +74,7 @@ public class MeusAnunciosActivity extends AppCompatActivity {
                     anuncios.add( dsnapshot.getValue(Anuncio.class) );
                 }
 
-                Collections.reverse( anuncios );
+                Collections.reverse(anuncios);
                 adapterAnuncios.notifyDataSetChanged();
 
             }
@@ -90,7 +84,11 @@ public class MeusAnunciosActivity extends AppCompatActivity {
 
             }
         });
-
     }
+    public void Componentes (){
+
+        recyclerAnuncios = findViewById(R.id.recyclerAnuncios);
+    }
+
 
 }

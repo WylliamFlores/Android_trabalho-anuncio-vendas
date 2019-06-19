@@ -192,6 +192,7 @@ public class AnunciosActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
     public void Componentes (){
         recyclerAnunciosPublicos = findViewById(R.id.recyclerAnunciosPublicos);
     }
