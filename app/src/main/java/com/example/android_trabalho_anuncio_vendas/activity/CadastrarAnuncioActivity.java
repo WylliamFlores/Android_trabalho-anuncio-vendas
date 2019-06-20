@@ -135,7 +135,6 @@ public class CadastrarAnuncioActivity extends AppCompatActivity
 
     }
 
-
     public void validarCamposAnuncio(View view){
 
         anuncio = configurarAnuncio();
@@ -167,12 +166,10 @@ public class CadastrarAnuncioActivity extends AppCompatActivity
         }
     }
 
-
     public void escolherImagem(int requestCode){
         Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(i, requestCode);
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -194,7 +191,6 @@ public class CadastrarAnuncioActivity extends AppCompatActivity
 
         }
     }
-
 
     private void carregarSpinner() {
 
@@ -244,7 +240,6 @@ public class CadastrarAnuncioActivity extends AppCompatActivity
         iimage2.setOnClickListener(this);
     }
 
-
     private void alertaValidacaoPermissao(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Permissões Negadas");
@@ -260,7 +255,6 @@ public class CadastrarAnuncioActivity extends AppCompatActivity
         AlertDialog dialog = builder.create();
         dialog.show();
     }
-
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {

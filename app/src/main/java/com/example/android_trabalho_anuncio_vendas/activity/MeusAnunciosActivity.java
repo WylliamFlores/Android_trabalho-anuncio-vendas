@@ -89,6 +89,4 @@ public class MeusAnunciosActivity extends AppCompatActivity {
 
         recyclerAnuncios = findViewById(R.id.recyclerAnuncios);
     }
-
-
 }

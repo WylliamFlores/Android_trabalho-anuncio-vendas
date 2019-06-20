@@ -48,7 +48,6 @@ public class AnunciosActivity extends AppCompatActivity {
 
         Componentes();
 
-
         autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
         anunciosPublicosRefencia = ConfiguracaoFirebase.getFirebase()
                 .child("anuncios");
@@ -110,7 +109,6 @@ public class AnunciosActivity extends AppCompatActivity {
 
     }
 
-
     public void recuperarAnunciosCidade(){
         anunciosPublicosRefencia = ConfiguracaoFirebase.getFirebase()
                 .child("anuncios")
@@ -138,7 +136,6 @@ public class AnunciosActivity extends AppCompatActivity {
             }
         });
     }
-
 
     public void recuperarAnunciosPublicos(){
 
@@ -168,8 +165,6 @@ public class AnunciosActivity extends AppCompatActivity {
         });
 
     }
-
-
 
     // criar itens do menu
     @Override
